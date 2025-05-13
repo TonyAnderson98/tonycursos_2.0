@@ -1,0 +1,98 @@
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+}
+
+.login__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: var(--width-form);
+    max-width: var(--max-width-form);
+}
+
+/* Título */
+.login__title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+/* Formulário de Login */
+.login__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    width: 100%;
+}
+
+.login__label {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+}
+
+.login__input {
+    padding: var(--spacing-md);
+    border: solid 1px var(--color-border);
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    transition: var(--transition-default);
+}
+
+.login__button {
+    background-color: var(--color-background-button);
+    padding: var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: 1rem;
+    font-weight: var(--font-weight-semibold);
+    transition: var(--transition-default);
+    cursor: pointer;
+}
+
+.login__button:hover,
+.login__button:focus {
+    background-color: var(--color-background-button-hover);
+}
+
+/* Textos e links */
+.login__text {
+    margin-top: var(--spacing-sm);
+    color: var(--color-text);
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.login__link {
+    color: white;
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+}
+
+.login__link:hover,
+.login__link:focus {
+    text-decoration: underline;
+}
+
+/* Media Queries para responsividade */
+@media (max-width: 768px) {
+    .login__form {
+        border: none;
+        padding: var(--spacing-md);
+    }
+
+    .login__input {
+        padding: var(--spacing-sm);
+    }
+
+    .login__button {
+        padding: var(--spacing-sm);
+    }
+}

@@ -1,0 +1,6 @@
+# Title: <tipo>(<escopo>): <descrição breve>
+# Exemplo: feat(auth): add login with Google
+#
+# Corpo (opcional): explique o que foi alterado e por quê
+#
+# Rodapé (opcional): issues relacionadas (ex.: Fixes #123)
