@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
         // Verifica se o email existe
         const result = await pool.query(
-            "SELECT id, name, password FROM users WHERE email = $1",
+            "SELECT id, name, email, password FROM users WHERE email = $1",
             [email]
         );
 
@@ -52,6 +52,7 @@ export async function POST(req: Request) {
             message: "Login bem-sucedido!",
             userId: user.id,
             name: user.name,
+            email: user.email,
         });
     } catch (err) {
         console.error("Erro ao fazer login: ", err);
