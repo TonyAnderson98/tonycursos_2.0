@@ -30,6 +30,7 @@ export default function Login() {
         setError(null);
         setIsLoading(true);
 
+        
         try {
             const response = await fetch("/api/auth/login", {
                 method: "POST",
