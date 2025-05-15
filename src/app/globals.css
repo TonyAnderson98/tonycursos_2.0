@@ -1,21 +1,60 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 :root {
+    /* Cores */
     --color-border: #818181;
-    --color-background-button: var(--background-button, #007bff);
-    --color-background-button-hover: var(--background-button-hovered, #0056b3);
     --color-text: #fafafa;
+    --color-text-grey: #9b9ba5;
+    --color-background-dark: #1c1c21;
+
+    /* Cores de Botão */
+    --color-button-primary: #007bff;
+    --color-button-primary-hover: #0056b3;
+
+    /* Espaçamentos */
+    --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
     --spacing-md: 1rem;
     --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+
+    /* Bordas */
     --border-radius-sm: 0.25rem;
     --border-radius-md: 0.5rem;
     --border-radius-lg: 1rem;
+    --border-width-default: 1px;
+
+    /* Tipografia - Tamanhos das fontes */
+    --font-size-xxs: 0.625rem; /* 10px */
+    --font-size-xs: 0.75rem; /* 12px */
+    --font-size-sm: 0.875rem; /* 14px */
+    --font-size-md: 1rem; /* 16px */
+    --font-size-lg: 1.125rem; /* 18px */
+    --font-size-xl: 1.25rem; /* 20px */
+    --font-size-xxl: 1.5rem; /* 24px */
+    --font-size-xxxl: 1.75rem; /* 28px */
+    --font-size-display: 2rem; /* 32px */
+    --font-size-display-lg: 2.5rem; /* 40px */
+
+    --font-weight-thin: 100;
+    --font-weight-extralight: 200;
+    --font-weight-light: 300;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --font-weight-black: 900;
+
+    /* Transições */
+    --transition-default: all 0.25s ease;
+    --transition-fast: all 0.1s ease;
+    --transition-slow: all 0.4s ease;
+
+    /* Formulários */
     --width-form: 95%;
     --max-width-form: 30rem;
-    --font-weight-semibold: 600;
-    --transition-default: all 0.25s ease;
-    --background-dark: #1c1c21;
+    --input-height: 2.5rem;
 }
 
 * {
@@ -27,5 +66,5 @@
 }
 
 body {
-    background-color: var(--background-dark);
+    background-color: var(--color-background-dark);
 }

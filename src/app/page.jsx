@@ -19,12 +19,16 @@ export default function Home() {
     }, []);
 
     return (
-        <>
+        <main className={styles.main}>
             {chapters.map((chapter) => (
                 <div key={chapter.chapter_id}>
-                    <h1>{chapter.chapter_name}</h1>
-                    <h3>{chapter.chapter_description}</h3>
-                    <hr />
+                    <h1 className={styles.chapter__name}>
+                        {chapter.chapter_name}
+                    </h1>
+                    <h3 className={styles.chapter__description}>
+                        {chapter.chapter_description}
+                    </h3>
+                    <hr className={styles.hr} />
                     <section className={styles.module__container}>
                         {chapter.modules.map((module) => (
                             <div key={module.module_id}>
@@ -33,6 +37,7 @@ export default function Home() {
                                     width={250}
                                     height={500}
                                     alt="50"
+                                    layout="resposive"
                                 />
                             </div>
                         ))}
@@ -40,6 +45,6 @@ export default function Home() {
                     <br />
                 </div>
             ))}
-        </>
+        </main>
     );
 }

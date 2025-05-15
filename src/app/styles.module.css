@@ -1,3 +1,7 @@
+.main {
+    padding: 4rem 3rem;
+}
+
 .module__container {
     display: flex;
     flex-direction: row;
@@ -5,5 +9,29 @@
     gap: var(--spacing-sm);
 }
 
+.chapter__name {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-black);
+    margin-bottom: var(--spacing-sm);
+}
+
+.chapter__description {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-grey);
+}
+
+.hr {
+    margin: 2rem 0;
+    border-color: var(--color-border);
+}
+
 @media (max-width: 768px) {
+    .main {
+        padding: 1rem;
+    }
+
+    .module__container {
+        justify-content: center;
+    }
 }
