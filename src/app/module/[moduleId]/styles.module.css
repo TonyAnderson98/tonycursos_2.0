@@ -1,0 +1,51 @@
+.main {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+}
+
+.module__page__container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 35%;
+    padding: 5px;
+    margin: 5px;
+}
+
+.module__header {
+    border: dashed 1px rgb(114, 114, 114);
+    padding: 1rem;
+    margin: 2px;
+    border-radius: 1rem;
+}
+
+.module__title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-black);
+}
+
+.module__lessons__list {
+    border: dashed 1px rgb(114, 114, 114);
+    padding: 1rem;
+    margin: 2px;
+    border-radius: 1rem;
+}
+
+.lesson__button {
+    border-bottom: solid 1px grey;
+    padding: 10px;
+}
+
+.lesson__button:hover {
+    background-color: #0070f3;
+    cursor: pointer;
+}
+
+.lesson_frame__container {
+    width: 65%;
+    padding: 5px;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+}
