@@ -14,30 +14,46 @@
 }
 
 .module__header {
-    border: dashed 1px rgb(114, 114, 114);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: solid 2px var(--color-border-grey-1);
     padding: 1rem;
     margin: 2px;
     border-radius: 1rem;
 }
 
 .module__title {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-black);
+    color: var(--color-text-grey);
+}
+
+.module__description {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-semibold);
 }
 
 .module__lessons__list {
-    border: dashed 1px rgb(114, 114, 114);
-    padding: 1rem;
+    border: solid 2px var(--color-border-grey-1);
     margin: 2px;
     border-radius: 1rem;
 }
 
-.lesson__button {
-    border-bottom: solid 1px grey;
-    padding: 10px;
+.lessons__label {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-black);
 }
 
-.lesson__button:hover {
+.lesson__item {
+    border-top: solid 1px var(--color-border-grey-1);
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.lesson__item:hover {
     background-color: #0070f3;
     cursor: pointer;
 }

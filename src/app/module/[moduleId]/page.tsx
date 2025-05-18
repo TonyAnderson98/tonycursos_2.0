@@ -53,18 +53,29 @@ export default function Module({
         <main className={styles.main}>
             <section className={styles.module__page__container}>
                 <div className={styles.module__header}>
-                    <h1 className={styles.module__title}>
-                        {moduleData.module_name}
-                    </h1>
-                    <h3 className={styles.module__description}>
-                        {moduleData.module_description}
-                    </h3>
+                    <div>
+                        <h1 className={styles.module__description}>
+                            {moduleData.module_description}
+                        </h1>
+                        <h3 className={styles.module__title}>
+                            {moduleData.module_name}
+                        </h3>
+                    </div>
+                    <div
+                        style={{
+                            width: "120px",
+                            height: "120px",
+                            backgroundColor: "green",
+                            borderRadius: "100%",
+                        }}
+                    ></div>
                 </div>
 
                 <div className={styles.module__lessons__list}>
+                    <h2 className={styles.lessons__label}>Aulas</h2>
                     {moduleData.lessons.map((lesson) => (
                         <div
-                            className={styles.lesson__button}
+                            className={styles.lesson__item}
                             key={lesson.lesson_id}
                             onClick={() =>
                                 setSelectedLessonId(lesson.lesson_id.toString())

@@ -1,0 +1,17 @@
+.lesson__title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.lesson__description {
+    color: var(--color-text-grey);
+    font-size: var(--font-size-normal);
+    font-weight: var(--font-weight-medium);
+}
+
+.lesson__details {
+    width: 1000px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

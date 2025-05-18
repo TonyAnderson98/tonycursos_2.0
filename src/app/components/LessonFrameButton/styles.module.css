@@ -1,0 +1,14 @@
+.lesson__frame__button {
+    background-color: transparent;
+    color: white;
+    border: solid 2px grey;
+    padding: 0.5rem;
+    border-radius: 5px;
+    transition: all 0.25s ease;
+}
+
+.lesson__frame__button:hover {
+    background-color: rgb(19, 86, 212);
+    border: solid 2px rgb(19, 86, 212);
+    cursor: pointer;
+}
