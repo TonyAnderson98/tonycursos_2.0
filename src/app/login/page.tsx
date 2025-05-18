@@ -2,21 +2,8 @@
 
 import React, { useState } from "react";
 import styles from "./styles.module.css";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
-// Definir tipos para TypeScript
-interface LoginResponse {
-    userId: string;
-    name: string;
-    email: string;
-    error?: string;
-}
-
-interface UserData {
-    userId: string;
-    userName: string;
-    userEmail: string;
-}
 
 export default function Login() {
     const [email, setEmail] = useState<string>("");
@@ -30,39 +17,25 @@ export default function Login() {
         setError(null);
         setIsLoading(true);
 
-        
         try {
-            const response = await fetch("/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
+            const result = await signIn("credentials", {
+                redirect: false,
+                email,
+                password
             });
 
-            const data: LoginResponse = await response.json();
-
-            if (!response.ok) {
-                setError(data.error || null);
-                setIsLoading(false);
-                return;
+            if (result?.error) {
+                setError(result.error);
+            } else {
+                router.push("/");
             }
-
-            const userData: UserData = {
-                userId: data.userId,
-                userName: data.name,
-                userEmail: data.email,
-            };
-
-            localStorage.setItem("user", JSON.stringify(userData));
-            window.dispatchEvent(new Event("storageUpdated"));
-
-            router.push("/");
         } catch (err) {
             setError("Erro ao conectar com o servidor. Tente novamente.");
+        } finally {
             setIsLoading(false);
         }
     };
+
 
     return (
         <main className={styles.login}>
