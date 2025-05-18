@@ -1,17 +1,26 @@
+// components/LessonFrameButton.tsx
+"use client";
+import React from "react";
 import styles from "./styles.module.css";
 
+interface LessonFrameButtonProps {
+    text: string;
+    onClick?: () => void;
+    disabled?: boolean;
+}
 
-/**
- * Componente que adiciona botões no Lesson Frame
- * @param {string} text - Texto passado para o botão
- * @example
- * <LessonFrameButton text={"Favoritar Aula"} >
- */
-
-export default function LessonFrameButton({ text } : {text: string}) {
+export default function LessonFrameButton({
+    text,
+    onClick,
+    disabled = false
+}: LessonFrameButtonProps) {
     return (
-        <>
-            <button className={styles.lesson__frame__button}>{text}</button>
-        </>
+        <button
+            className={styles.lesson__frame__button}
+            onClick={onClick}
+            disabled={disabled}
+        >
+            {text}
+        </button>
     );
 }

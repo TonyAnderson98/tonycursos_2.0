@@ -2,7 +2,7 @@
 import { useSession } from "next-auth/react";
 import LessonFrame from "@/app/components/LessonFrame";
 import { use, useState, useEffect, useCallback } from "react";
-import styles from './styles.module.css'
+import styles from './styles.module.css';
 import ProgressDonut from "@/app/ProgressDonut";
 
 interface Lesson {
@@ -29,8 +29,7 @@ export default function Module({
 }: {
     params: Promise<{ moduleId: string }>;
 }) {
-    const { moduleId } = use(params); // hook reativo do React 18
-
+    const { moduleId } = use(params);
     const { data: session, status } = useSession();
 
     const [moduleData, setModuleData] = useState<ModuleData | null>(null);
@@ -38,9 +37,10 @@ export default function Module({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const fetchModuleData = useCallback(async (moduleId: string) => {
-        const response = await fetch(`/api/module/${moduleId}`);
+    const fetchModuleData = useCallback(async (id: string) => {
+        const response = await fetch(`/api/module/${id}`);
         if (!response.ok) throw new Error("Falha ao carregar módulo");
         return await response.json();
     }, []);
@@ -51,23 +51,23 @@ export default function Module({
         return await response.json() as ProgressResponse;
     }, []);
 
-    const fetchAllData = useCallback(async () => {
+    const loadData = useCallback(async () => {
         if (!session?.user?.id) return;
 
         try {
             setLoading(true);
             setError(null);
 
-            const [moduleData, progressData] = await Promise.all([
+            const [module, progress] = await Promise.all([
                 fetchModuleData(moduleId),
-                fetchProgressData(moduleId, session.user.id),
+                fetchProgressData(moduleId, session.user.id)
             ]);
 
-            setModuleData(moduleData);
-            setProgressData(progressData);
+            setModuleData(module);
+            setProgressData(progress);
 
-            if (moduleData.lessons?.length > 0) {
-                setSelectedLessonId(moduleData.lessons[0].lesson_id.toString());
+            if (module.lessons?.length > 0 && !selectedLessonId) {
+                setSelectedLessonId(module.lessons[0].lesson_id.toString());
             }
         } catch (err) {
             console.error("Erro ao carregar dados:", err);
@@ -75,16 +75,25 @@ export default function Module({
         } finally {
             setLoading(false);
         }
-    }, [moduleId, session?.user?.id, fetchModuleData, fetchProgressData]);
+    }, [moduleId, session?.user?.id, fetchModuleData, fetchProgressData, selectedLessonId]);
+
+    const refreshProgress = useCallback(async () => {
+        if (!session?.user?.id) return;
+
+        try {
+            setIsRefreshing(true);
+            const progress = await fetchProgressData(moduleId, session.user.id);
+            setProgressData(progress);
+        } catch (err) {
+            console.error("Erro ao atualizar progresso:", err);
+        } finally {
+            setIsRefreshing(false);
+        }
+    }, [moduleId, session?.user?.id, fetchProgressData]);
 
     useEffect(() => {
-        if (session?.user?.id) {
-            fetchAllData();
-        }
-    }, [fetchAllData, session?.user?.id]);
-
-
-
+        loadData();
+    }, [loadData]);
 
     if (status === "loading") return <div className={styles.loading}>Verificando autenticação...</div>;
     if (status === "unauthenticated") return <div className={styles.error}>Por favor, faça login para acessar este módulo</div>;
@@ -92,6 +101,10 @@ export default function Module({
     if (error) return <div className={styles.error}>{error}</div>;
     if (!moduleData) return <div className={styles.error}>Nenhum dado encontrado</div>;
     if (!progressData) return <div className={styles.loading}>Carregando progresso...</div>;
+
+    const isLessonCompleted = (lessonId: number) => {
+        return progressData.completed_lesson_ids.includes(lessonId);
+    };
 
     return (
         <main className={styles.main}>
@@ -108,7 +121,6 @@ export default function Module({
                             {progressData.total_completed_lessons}/{progressData.total_lessons} aulas completas
                         </span>
                     </div>
-                    {/* Gráfico de Rosca */}
                     <div className={styles.progress_circle}>
                         <ProgressDonut
                             completed={Number(progressData.total_completed_lessons)}
@@ -119,27 +131,34 @@ export default function Module({
 
                 <div className={styles.module__lessons__list}>
                     <h2 className={styles.lessons__label}>Aulas</h2>
-                    {moduleData.lessons.map((lesson) => {
-                        return (
-                            <div
-                                className={`${styles.lesson__item} ${selectedLessonId === lesson.lesson_id.toString() ? styles.active : ''}`}
-
-                                key={lesson.lesson_id}
-                                onClick={() => setSelectedLessonId(lesson.lesson_id.toString())}
-                            >
-                                {progressData.completed_lesson_ids.includes(lesson.lesson_id) && (
-                                    <span className={styles.completed_badge}>✔</span>
-                                )}
-
-
-                                {lesson.lesson_name}
-                            </div>
-                        );
-                    })}
+                    {moduleData.lessons.map((lesson) => (
+                        <div
+                            key={lesson.lesson_id}
+                            className={`${styles.lesson__item} ${selectedLessonId === lesson.lesson_id.toString() ? styles.active : ''
+                                }`}
+                            onClick={() => setSelectedLessonId(lesson.lesson_id.toString())}
+                        >
+                            {isLessonCompleted(lesson.lesson_id) && (
+                                <span className={styles.completed_badge}>
+                                    {isRefreshing && selectedLessonId === lesson.lesson_id.toString()
+                                        ? '⌛'
+                                        : '✔'}
+                                </span>
+                            )}
+                            {lesson.lesson_name}
+                        </div>
+                    ))}
                 </div>
             </section>
+
             <section className={styles.lesson_frame__container}>
-                {selectedLessonId && <LessonFrame lessonId={selectedLessonId} />}
+                {selectedLessonId && (
+                    <LessonFrame
+                        lessonId={selectedLessonId}
+                        onLessonCompleted={refreshProgress}
+                        initialCompleted={isLessonCompleted(Number(selectedLessonId))}
+                    />
+                )}
             </section>
         </main>
     );
