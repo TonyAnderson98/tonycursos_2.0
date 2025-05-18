@@ -43,7 +43,7 @@ export default function Login() {
             const data: LoginResponse = await response.json();
 
             if (!response.ok) {
-                setError(data.error);
+                setError(data.error || null);
                 setIsLoading(false);
                 return;
             }

@@ -58,7 +58,7 @@ export default function LessonFrame({ lessonId }: { lessonId: string }) {
                 <iframe
                     width="1000"
                     height="563"
-                    src={`https://www.youtube.com/embed/${lessonData.lesson_video_id}`}
+                    src={`https://www.youtube.com/embed/${lessonData?.lesson_video_id}`}
                     title="Title"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     frameBorder="0"
@@ -68,10 +68,10 @@ export default function LessonFrame({ lessonId }: { lessonId: string }) {
             <section className={styles.lesson__details}>
                 <div>
                     <h2 className={styles.lesson__title}>
-                        {lessonData.lesson_name}
+                        {lessonData?.lesson_name}
                     </h2>
                     <p className={styles.lesson__description}>
-                        {lessonData.lesson_description}
+                        {lessonData?.lesson_description}
                     </p>
                 </div>
                 <div>

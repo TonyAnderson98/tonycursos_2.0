@@ -55,10 +55,10 @@ export default function Module({
                 <div className={styles.module__header}>
                     <div>
                         <h1 className={styles.module__description}>
-                            {moduleData.module_description}
+                            {moduleData?.module_description}
                         </h1>
                         <h3 className={styles.module__title}>
-                            {moduleData.module_name}
+                            {moduleData?.module_name}
                         </h3>
                     </div>
                     <div
@@ -73,7 +73,7 @@ export default function Module({
 
                 <div className={styles.module__lessons__list}>
                     <h2 className={styles.lessons__label}>Aulas</h2>
-                    {moduleData.lessons.map((lesson) => (
+                    {moduleData?.lessons.map((lesson) => (
                         <div
                             className={styles.lesson__item}
                             key={lesson.lesson_id}
