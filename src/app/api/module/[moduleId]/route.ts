@@ -3,7 +3,7 @@ import pool from "@/lib/db";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { moduleId: string } }
+    { params }: { params: Promise<{ moduleId: string }> }
 ) {
     const { moduleId } = await params;
 
