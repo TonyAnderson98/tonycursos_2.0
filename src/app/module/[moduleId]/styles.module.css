@@ -58,10 +58,29 @@
     cursor: pointer;
 }
 
+.active {
+    background-color: #0070f3;
+}
+
 .lesson_frame__container {
     width: 65%;
     padding: 5px;
     margin: 5px;
     display: flex;
     flex-direction: column;
+}
+
+.completed_badge {
+    color: #4caf50;
+    font-size: 14pt;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.progress_circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 130px;
+    height: 130px;
 }
