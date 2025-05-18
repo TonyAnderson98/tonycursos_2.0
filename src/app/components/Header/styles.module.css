@@ -1,0 +1,17 @@
+.header {
+    background-color: black;
+    padding: 1rem 2rem;
+    border-bottom: solid 2px var(--color-border-grey-1);
+}
+
+.link__itens {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    list-style: none;
+    align-items: end;
+}
+
+.link__item {
+    text-decoration: none;
+}
