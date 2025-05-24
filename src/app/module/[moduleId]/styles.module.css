@@ -55,11 +55,13 @@
 
 .lesson__item:hover {
     background-color: #0070f3;
+    border-radius: 5px;
     cursor: pointer;
 }
 
 .active {
     background-color: #0070f3;
+    border-radius: 5px;
 }
 
 .lesson_frame__container {

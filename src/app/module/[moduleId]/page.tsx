@@ -37,7 +37,7 @@ export default function Module({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [transitioning, setTransitioning] = useState(false);
 
     const fetchModuleData = useCallback(async (id: string) => {
         const response = await fetch(`/api/module/${id}`);
@@ -51,49 +51,52 @@ export default function Module({
         return await response.json() as ProgressResponse;
     }, []);
 
-    const loadData = useCallback(async () => {
-        if (!session?.user?.id) return;
+    // Carrega dados iniciais apenas uma vez
+    useEffect(() => {
+        const loadInitialData = async () => {
+            if (!session?.user?.id) return;
 
-        try {
-            setLoading(true);
-            setError(null);
+            try {
+                setLoading(true);
+                const [module, progress] = await Promise.all([
+                    fetchModuleData(moduleId),
+                    fetchProgressData(moduleId, session.user.id)
+                ]);
 
-            const [module, progress] = await Promise.all([
-                fetchModuleData(moduleId),
-                fetchProgressData(moduleId, session.user.id)
-            ]);
+                setModuleData(module);
+                setProgressData(progress);
 
-            setModuleData(module);
-            setProgressData(progress);
-
-            if (module.lessons?.length > 0 && !selectedLessonId) {
-                setSelectedLessonId(module.lessons[0].lesson_id.toString());
+                if (module.lessons?.length > 0) {
+                    setSelectedLessonId(module.lessons[0].lesson_id.toString());
+                }
+            } catch (err) {
+                console.error("Erro ao carregar dados:", err);
+                setError("Erro ao carregar dados. Tente novamente.");
+            } finally {
+                setLoading(false);
             }
-        } catch (err) {
-            console.error("Erro ao carregar dados:", err);
-            setError("Erro ao carregar dados. Tente novamente.");
-        } finally {
-            setLoading(false);
-        }
-    }, [moduleId, session?.user?.id, fetchModuleData, fetchProgressData, selectedLessonId]);
+        };
+
+        loadInitialData();
+    }, [moduleId, session?.user?.id, fetchModuleData, fetchProgressData]);
 
     const refreshProgress = useCallback(async () => {
         if (!session?.user?.id) return;
 
         try {
-            setIsRefreshing(true);
             const progress = await fetchProgressData(moduleId, session.user.id);
             setProgressData(progress);
         } catch (err) {
             console.error("Erro ao atualizar progresso:", err);
-        } finally {
-            setIsRefreshing(false);
         }
     }, [moduleId, session?.user?.id, fetchProgressData]);
 
-    useEffect(() => {
-        loadData();
-    }, [loadData]);
+    const handleLessonChange = (lessonId: string) => {
+        setTransitioning(true);
+        setSelectedLessonId(lessonId);
+        // Remove a classe de transição após 300ms (tempo da animação CSS)
+        setTimeout(() => setTransitioning(false), 300);
+    };
 
     if (status === "loading") return <div className={styles.loading}>Verificando autenticação...</div>;
     if (status === "unauthenticated") return <div className={styles.error}>Por favor, faça login para acessar este módulo</div>;
@@ -101,10 +104,6 @@ export default function Module({
     if (error) return <div className={styles.error}>{error}</div>;
     if (!moduleData) return <div className={styles.error}>Nenhum dado encontrado</div>;
     if (!progressData) return <div className={styles.loading}>Carregando progresso...</div>;
-
-    const isLessonCompleted = (lessonId: number) => {
-        return progressData.completed_lesson_ids.includes(lessonId);
-    };
 
     return (
         <main className={styles.main}>
@@ -136,14 +135,10 @@ export default function Module({
                             key={lesson.lesson_id}
                             className={`${styles.lesson__item} ${selectedLessonId === lesson.lesson_id.toString() ? styles.active : ''
                                 }`}
-                            onClick={() => setSelectedLessonId(lesson.lesson_id.toString())}
+                            onClick={() => handleLessonChange(lesson.lesson_id.toString())}
                         >
-                            {isLessonCompleted(lesson.lesson_id) && (
-                                <span className={styles.completed_badge}>
-                                    {isRefreshing && selectedLessonId === lesson.lesson_id.toString()
-                                        ? '⌛'
-                                        : '✔'}
-                                </span>
+                            {progressData.completed_lesson_ids.includes(lesson.lesson_id) && (
+                                <span className={styles.completed_badge}>✔</span>
                             )}
                             {lesson.lesson_name}
                         </div>
@@ -151,12 +146,14 @@ export default function Module({
                 </div>
             </section>
 
-            <section className={styles.lesson_frame__container}>
+            <section className={`${styles.lesson_frame__container} ${transitioning ? styles.transitioning : ''
+                }`}>
                 {selectedLessonId && (
                     <LessonFrame
+                        key={selectedLessonId}
                         lessonId={selectedLessonId}
                         onLessonCompleted={refreshProgress}
-                        initialCompleted={isLessonCompleted(Number(selectedLessonId))}
+                        initialCompleted={progressData.completed_lesson_ids.includes(Number(selectedLessonId))}
                     />
                 )}
             </section>

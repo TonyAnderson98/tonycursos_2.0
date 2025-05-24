@@ -55,7 +55,7 @@ export default function LessonFrame({
         const newCompletedState = !isCompleted;
 
         try {
-            // Otimistic UI update
+            // Atualização otimista
             setIsCompleted(newCompletedState);
 
             const response = await fetch('/api/progress/complete-lesson', {
@@ -66,7 +66,7 @@ export default function LessonFrame({
                 body: JSON.stringify({
                     userId: session.user.id,
                     lessonId,
-                    isCompleted: !newCompletedState // Envia o estado atual (antes da mudança)
+                    isCompleted: !newCompletedState
                 }),
             });
 
@@ -74,7 +74,7 @@ export default function LessonFrame({
                 throw new Error("Failed to update lesson completion");
             }
 
-            // Atualiza os dados do módulo
+            // Atualiza o progresso no componente pai
             await onLessonCompleted();
         } catch (error) {
             console.error("Error updating lesson completion:", error);
@@ -97,12 +97,13 @@ export default function LessonFrame({
         <div className={styles.lesson__container}>
             <div className={styles.video__container}>
                 <iframe
-                    width="100%"
-                    height="500"
+                    width="1000"
+                    height="562"
                     src={`https://www.youtube.com/embed/${lessonData.lesson_video_id}`}
                     title={lessonData.lesson_name}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
+                    frameBorder={0}
                 ></iframe>
             </div>
 
@@ -114,7 +115,7 @@ export default function LessonFrame({
 
                 <div className={styles.lesson__actions}>
                     <LessonFrameButton
-                        text={isCompleted ? "Aula concluída" : "Concluir aula"}
+                        text={isCompleted ? "Aula concluída" : "✔ Concluir aula"}
                         onClick={handleCompleteLesson}
                         disabled={isUpdating}
                     />

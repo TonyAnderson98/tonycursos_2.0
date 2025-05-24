@@ -9,6 +9,66 @@
     gap: var(--spacing-sm);
 }
 
+.module__card {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        scale: 1.05;
+    }
+}
+
+.module__link {
+    display: block;
+    position: relative;
+}
+
+.module__image {
+    transition: opacity 0.3s ease-in-out;
+    
+}
+
+.module__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    opacity: 0; /* Inicialmente invisível */
+    transition: opacity 0.3s ease; /* Adiciona uma transição suave para o overlay */
+    padding: 20px;
+    box-sizing: border-box; 
+}
+
+.module__card:hover .module__overlay {
+    opacity: 1; /* Mostra o overlay ao passar o mouse */
+}
+
+.module__card:hover .module__image {
+    opacity: 0.9; /* Diminui a opacidade da imagem ao passar o mouse */
+}
+
+.overlay__title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.overlay__description {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.overlay__difficulty {
+    font-size: 0.8rem;
+}
+
 .chapter__name {
     font-size: var(--font-size-xxl);
     font-weight: var(--font-weight-black);

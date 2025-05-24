@@ -5,7 +5,7 @@ import pool from "@/lib/db";
 import { JWT } from "next-auth/jwt";
 import { Session, User } from "next-auth";
 
-// 🔧 Tipagem estendida para garantir campos obrigatórios no JWT e sessão
+
 declare module "next-auth" {
     interface Session {
         user: {
@@ -97,7 +97,7 @@ export const authOptions: NextAuthOptions = {
 
     pages: {
         signIn: "/login",
-        error: "/login", // ou outra página de erro, se preferir
+        error: "/login", 
     },
 
     secret: process.env.NEXTAUTH_SECRET,
