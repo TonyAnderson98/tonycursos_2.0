@@ -4,20 +4,38 @@ import { useState, useEffect } from "react";
 import styles from "./styles.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
     const [chapters, setChapters] = useState([]);
+    const [purchasedModules, setPurchasedModules] = useState({});
+    const { data: session, status } = useSession();
 
     useEffect(() => {
         const fetchChapters = async () => {
             const response = await fetch("/api/chapters");
-
             const data = await response.json();
             setChapters(data);
         };
 
         fetchChapters();
     }, []);
+
+    useEffect(() => {
+        const fetchPurchasedModules = async (userId) => {
+            const response = await fetch(`/api/purchased_modules/${userId}`);
+            const data = await response.json();
+            const purchasedMap = {};
+            data?.purchased_modules?.forEach(module => {
+                purchasedMap[module.module_id] = module.status;
+            });
+            setPurchasedModules(purchasedMap);
+        };
+
+        if (session?.user?.id) {
+            fetchPurchasedModules(session.user.id);
+        }
+    }, [session?.user?.id]);
 
     return (
         <main className={styles.main}>
@@ -39,10 +57,22 @@ export default function Home() {
                                         width={250}
                                         height={500}
                                         alt="50"
-                                        layout="resposive"
                                         className={styles.module__image}
                                     />
-                                    <div className={styles.module__overlay}> 
+                                    <div>
+                                        <span>
+                                            {status === "unauthenticated" ? (
+                                                "Faça login para assistir"
+                                            ) : purchasedModules[module.module_id] === 'ativo' ? (
+                                                "Adquirido"
+                                            ) : purchasedModules[module.module_id] === 'expirado' ? (
+                                                "Expirado"
+                                            ) : (
+                                                "Disponível"
+                                            )}
+                                        </span>
+                                    </div>
+                                    <div className={styles.module__overlay}>
                                         <span className={styles.overlay__title}>{module.module_name}</span>
                                         <span className={styles.overlay__description}>{module.module_description}</span>
                                         <span className={styles.overlay__difficulty}>{chapter.chapter_difficulty}</span>

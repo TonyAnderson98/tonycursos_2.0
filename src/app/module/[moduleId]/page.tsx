@@ -4,6 +4,7 @@ import LessonFrame from "@/app/components/LessonFrame";
 import { use, useState, useEffect, useCallback } from "react";
 import styles from './styles.module.css';
 import ProgressDonut from "@/app/ProgressDonut";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 interface Lesson {
     lesson_id: number;
@@ -37,7 +38,8 @@ export default function Module({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
-    const [transitioning, setTransitioning] = useState(false);
+    const [isPurchased, setIsPurchased] = useState<boolean | null>(null); // Estado para verificar se o módulo foi comprado
+    const router = useRouter();
 
     const fetchModuleData = useCallback(async (id: string) => {
         const response = await fetch(`/api/module/${id}`);
@@ -51,10 +53,30 @@ export default function Module({
         return await response.json() as ProgressResponse;
     }, []);
 
-    // Carrega dados iniciais apenas uma vez
+    useEffect(() => {
+        const checkPurchaseStatus = async () => {
+            if (status === "authenticated" && session?.user?.id) {
+                try {
+                    const response = await fetch(`/api/check-purchase/${session.user.id}/${moduleId}`);
+                    const data = await response.json();
+                    setIsPurchased(data.purchased);
+                } catch (error) {
+                    console.error("Erro ao verificar compra:", error);
+                    setIsPurchased(false);
+                }
+            } else if (status === "unauthenticated") {
+                router.push("/login");
+            }
+        };
+
+        checkPurchaseStatus();
+    }, [moduleId, session?.user?.id, status, router]);
+
     useEffect(() => {
         const loadInitialData = async () => {
-            if (!session?.user?.id) return;
+            if (!session?.user?.id || isPurchased === false) {
+                return;
+            }
 
             try {
                 setLoading(true);
@@ -77,8 +99,10 @@ export default function Module({
             }
         };
 
-        loadInitialData();
-    }, [moduleId, session?.user?.id, fetchModuleData, fetchProgressData]);
+        if (isPurchased === true) {
+            loadInitialData();
+        }
+    }, [moduleId, session?.user?.id, fetchModuleData, fetchProgressData, isPurchased]);
 
     const refreshProgress = useCallback(async () => {
         if (!session?.user?.id) return;
@@ -92,14 +116,15 @@ export default function Module({
     }, [moduleId, session?.user?.id, fetchProgressData]);
 
     const handleLessonChange = (lessonId: string) => {
-        setTransitioning(true);
         setSelectedLessonId(lessonId);
-        // Remove a classe de transição após 300ms (tempo da animação CSS)
-        setTimeout(() => setTransitioning(false), 300);
     };
 
-    if (status === "loading") return <div className={styles.loading}>Verificando autenticação...</div>;
+    if (status === "loading" || isPurchased === null) return <div className={styles.loading}>Verificando acesso...</div>;
     if (status === "unauthenticated") return <div className={styles.error}>Por favor, faça login para acessar este módulo</div>;
+    if (isPurchased === false) {
+        router.push("/modulo-nao-adquirido");
+        return null;
+    }
     if (loading) return <div className={styles.loading}>Carregando...</div>;
     if (error) return <div className={styles.error}>{error}</div>;
     if (!moduleData) return <div className={styles.error}>Nenhum dado encontrado</div>;
@@ -146,8 +171,7 @@ export default function Module({
                 </div>
             </section>
 
-            <section className={`${styles.lesson_frame__container} ${transitioning ? styles.transitioning : ''
-                }`}>
+            <section className={styles.lesson_frame__container}>
                 {selectedLessonId && (
                     <LessonFrame
                         key={selectedLessonId}
